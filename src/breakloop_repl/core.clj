@@ -1,7 +1,7 @@
 (ns breakloop-repl.core
   (:require [clojure.main :as main]))
 
-;; Separate development thread #1 -- probably less valuable?
+;;;; Separate development thread #1 -- probably less valuable?
 
 (defmacro break []
   `(clojure.main/repl
@@ -27,9 +27,18 @@
 
 ;; (f 3)
 
-;; Separate development thread #2 -- clearly more developed
+;;;; Separate development thread #2 -- clearly more developed
 
 ;; probably unneeded
+
+;; TODO WHAT WAS I DOING HERE?
+;; IIRC I was experimenting with giving clj the kind of breakloop-centric repl that CL
+;;   reportedly had.
+;; If I'm understanding right from the below what's going on -- can I solve by including
+;;   the full local context in the exception?
+
+;; TODO probably unneeded
+
 (set! *default-data-reader-fn* tagged-literal)
 
 (defn print-call-stack
@@ -72,6 +81,12 @@
 
 (defn start-debug-repl
   [^Throwable x]
+  ;; TODO YOUAREHERE just added print-call-stack here and below so I can compare them and
+  ;; see how they differ -- my hypothesis is that by the time we get here, we're
+  ;; higher up the call stack (because [I hypothesize] the :caught hook only kicks in
+  ;; after the exception has percolated up the stack without being caught).
+  (println "call stack in start-debug-repl:")
+  (print-call-stack)
   (println "An error occurred:" (.getMessage x))
   (println "For complete details, (pp/pprint *e)")
   (println "Entering debug repl")
@@ -83,6 +98,7 @@
 
 (defn breakloop-repl
   []
+  ;; TODO what if I grab local-context on the next line?
   (main/repl :caught start-debug-repl
              :read quittable-reader
              :prompt #(print "bl=> ")))
@@ -92,6 +108,8 @@
 
 ;; function with error
 (defn f [a b c]
+  (println "call stack in f:")
+  (print-call-stack)
   (let [x a
         y b
         z c
