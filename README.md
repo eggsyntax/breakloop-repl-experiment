@@ -1,8 +1,6 @@
 # breakloop-repl
 
-Ultimately a failed proof-of-concept; I only had a bit of time to spend on it & was encountering some indeterminate behavior I didn't manage to solve quickly enough.
-
-I'd still ultimately like to find a way to have the full Common Lisp-style breakloop in Clojure, but it's challenging. As far as I can see, the more obvious route (custom REPL behavior) fails due to lack of continuations on the JVM ([Project Loom](https://cr.openjdk.java.net/~rpressler/loom/Loom-Proposal.html) may solve this at some point). This was an attempt to finesse that by `try`ing each expression and drop into a REPL if an error was encountered. This wouldn't have been a complete solution by any means even if I'd gotten it working, since any side effects in the code would have potentially have already been executed by the time the REPL starts, but it seemed worth trying the experiment.
+Ultimately a failed proof-of-concept; I only had a bit of time to spend on it. It may be impossible to have a true Common-Lisp style breakloop in Clojure due to lack of continuations on the JVM ([Project Loom](https://cr.openjdk.java.net/~rpressler/loom/Loom-Proposal.html) may solve this at some point). 
 
 ## Usage
 
